@@ -1,0 +1,8 @@
+Out of tree module:
+==================
+[ 2198.754725] main: loading out-of-tree module taints kernel.
+[ 2198.754753] main: module verification failed: signature and/or required key missing - tainting kernel
+[ 2198.756029] Hello World!!!
+[ 2211.550476] Good Bye World!!!
+[10081.476918] Hello World!!!
+
