@@ -1,0 +1,5 @@
+menu "HW character device modules"
+config HW_CHAR_DEV_MODULE 
+	tristate "Hello World char module"
+	default n
+endmenu
