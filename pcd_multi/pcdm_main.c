@@ -12,6 +12,10 @@
 #define PCD_MEM_SIZE_DEV3 1024
 #define PCD_MEM_SIZE_DEV4 512
 
+#define RDONLY 	0x01
+#define WRONLY 	0x10
+#define RDWR	0x11
+
 #undef pr_fmt
 /* Decorate the print using pr_fmt macro */
 #define pr_fmt(fmt) "%s :" fmt,__func__
@@ -47,28 +51,28 @@ struct pcd_driver_data pcd_data = {
 			.buffer = pcd_buf_dev1,
 			.size = PCD_MEM_SIZE_DEV1,
 			.serial_number = "PCDABXYZ1",
-			.perm = 0x1 /* RDONLY */
+			.perm = RDONLY /* RDONLY */
 		},
 		/* /dev/pcd-2 */
 		[1] = {
 			.buffer = pcd_buf_dev2,
 			.size = PCD_MEM_SIZE_DEV2,
 			.serial_number = "PCDABXYZ2",
-			.perm = 0x10 /* WRONLY */
+			.perm = WRONLY /* WRONLY */
 		},
 		/* /dev/pcd-3 */
 		[2] = {
 			.buffer = pcd_buf_dev3,
 			.size = PCD_MEM_SIZE_DEV3,
 			.serial_number = "PCDABXYZ3",
-			.perm = 0x11 /* RDWR */
+			.perm = RDWR /* RDWR */
 		},
 		/* /dev/pcd-4 */
 		[3] = {
 			.buffer = pcd_buf_dev4,
 			.size = PCD_MEM_SIZE_DEV4,
 			.serial_number = "PCDABXYZ4",
-			.perm = 0x11 /* RDWR */
+			.perm = RDWR /* RDWR */
 		},
 	},
 };
@@ -169,12 +173,8 @@ ssize_t pcd_write(struct file *fp, const char __user *buf, size_t count, loff_t 
     return count;
 }
 
-#define RDONLY 	0x01
-#define WRONLY 	0x10
-#define RDWR	0x11
-
 int file_perm_check(int dperm, int amode) {
-	if (dperm == amode)
+	if (dperm == RDWR)
 		return 0;
 
 	/* Check for READ ONLY */
@@ -203,11 +203,14 @@ int pcd_open(struct inode *in, struct file *fp) {
 	fp->private_data = pcd_data;
 
 	rc = file_perm_check(pcd_data->perm, fp->f_mode);
-	if (!rc) {
-		pr_err("No persmission to open the device\n");	
+	if (rc) {
+		pr_err("No persmission to open the device, perm: 0x%x, mode: 0x%x\n", pcd_data->perm, fp->f_mode);
+		goto err;
 	}
 
 	pr_info("open Successfull\n");
+
+err:
     return rc;
 }
 
@@ -305,5 +308,5 @@ module_exit(pcd_driver_exit)
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("Sathish");
-MODULE_DESCRIPTION("Pseudo char driver");
+MODULE_DESCRIPTION("Pseudo char driver for multiple devices");
 

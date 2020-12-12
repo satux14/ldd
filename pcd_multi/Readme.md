@@ -16,3 +16,9 @@ device data pointer to all the further file operation calls.
 FMODE_READ
 FMODE_WRITE
 File pointer has f_mode to get open mode information
+
+## Testing
+- Use dd if=<file> of=/dev/pcd-3 count 1 for write check
+- echo "Hello" > /dev/pcd-2
+- cat /dev/pcd-3
+
