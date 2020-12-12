@@ -15,16 +15,13 @@
 	copy_to_user()  
 	copy_from_user()  
 		include/linux/uaccess.h  
-  
 ## File Operations:  
 ## Device File Creation: udev or any commands/syscall  
 	Inode creation in memory and set default variable to file ops  
 ## Device File Access:  
 	File object creation: For every open call and it is destroyed when last close  
-
 ![Screenshot](fops1.jpg)
 ![Screenshot](udev.jpg)
-
 ### Verify sys files:
 ```
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# insmod pcd_main.ko
