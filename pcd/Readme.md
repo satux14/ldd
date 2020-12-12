@@ -1,31 +1,31 @@
-Character Device Driver:  
-Device number    
+# Character Device Driver:  
+## Device number    
 	alloc_chrdev_region() : unregister_chrdev_region();   
 		include/linux/fs.h  
 	Registration with VFS for character (CDEV_ADD)  
 	cdev_init();  
 	cdev_add(); : cdev_del();  
 		include/linux/cdev.h  
-Device files  
+## Device files  
 	class_create(); : class_destroy();     
 	device_create() : device_destroy();  
 		include/linux/device.h
-Implement file operations like open,close,read,write,seek etc.,  
+## Implement file operations like open,close,read,write,seek etc.,  
 	include/linux/fs.h  
 	copy_to_user()  
 	copy_from_user()  
 		include/linux/uaccess.h  
   
-File Operations:  
-Device File Creation: udev or any commands/syscall  
+## File Operations:  
+## Device File Creation: udev or any commands/syscall  
 	Inode creation in memory and set default variable to file ops  
-Device File Access:  
+## Device File Access:  
 	File object creation: For every open call and it is destroyed when last close  
 
 ![Screenshot](fops1.jpg)
 ![Screenshot](udev.jpg)
 
-###Verify sys files:
+### Verify sys files:
 ```
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# insmod pcd_main.ko
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# dmesg
@@ -57,7 +57,7 @@ root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# dmesg
 [63678.435237] pcd_driver_exit :Module unloaded successfully
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver#
 ```
-###Running pcd kernel module
+### Running pcd kernel module
 ```
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pcd# insmod pcd_main.ko
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pcd# echo "Hello" > /dev/pcd
