@@ -24,7 +24,7 @@ Device File Access:
 
 ![Screenshot](fops1.jpg)
 ![Screenshot](udev.jpg)
-![alt text](https://github.com/satux14/ldd/blob/master/pcd/udev.jpg)
+![alt text](https://github.com/satux14/ldd/blob/master/pcd/udev.jpg?raw=true)
 
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# insmod pcd_main.ko
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# dmesg
