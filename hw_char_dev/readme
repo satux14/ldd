@@ -1,4 +1,45 @@
-No tainted or out of tree message:
+# cd linux-src
+# cd drivers/char/
+# mkdir hw_char_dev
+# cd hw_char_dev
+  - Create hw_char_dev.c
+
+Kconfig:
+# cat Kconfig
+menu "HW character device modules"
+config HW_CHAR_DEV_MODULE
+        tristate "Hello World char module"
+        default n
+endmenu
+
+Makefile:
+# cat Makefile
+obj-$(CONFIG_HW_CHAR_DEV_MODULE) += hw_char_dev.o
+vi ../Kconfig
+source "drivers/char/hw_char_dev/Kconfig"
+endmenu
+
+# vi ../Makefile
+obj-y                       += hw_char_dev/
+
+# cd linux-src
+
+# make menuconfig
+
+/usr/src/linux-4.19.161# make modules
+  HOSTCC  scripts/kconfig/conf.o
+  HOSTLD  scripts/kconfig/conf
+scripts/kconfig/conf  --syncconfig Kconfig
+  CALL    scripts/checksyscalls.sh
+  DESCEND  objtool
+  CC [M]  drivers/char/hw_char_dev/hw_char_dev.o
+  Building modules, stage 2.
+  MODPOST 5066 modules
+  CC      drivers/char/hw_char_dev/hw_char_dev.mod.o
+  LD [M]  drivers/char/hw_char_dev/hw_char_dev.ko
+  
+
+-------- No tainted or out of tree message ----------
 
 [14926.143351] Hello World!!!
 [14973.618191] Good Bye World!!!
