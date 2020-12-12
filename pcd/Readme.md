@@ -22,6 +22,13 @@
 	File object creation: For every open call and it is destroyed when last close  
 ![Screenshot](fops1.jpg)
 ![Screenshot](udev.jpg)
+
+## Error macros
+IS_ERR()
+PTR_ERR()
+ERR_PTR()
+include/linux/err.h
+
 ### Verify sys files:
 ```
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# insmod pcd_main.ko
@@ -85,3 +92,21 @@ root@sathish-VirtualBox:/home/sathish/workspace/ldd/pcd# dmesg
 [68064.053682] pcd_release :release Successfull
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pcd#
 ```
+### No space error
+root@sathish-VirtualBox:/home/sathish/workspace/ldd/pcd# dmesg
+[69813.592944] pcd_driver_init :Device number: Major:Minor=>508:0
+[69813.593176] pcd_driver_init :Module init successfull
+[69827.788367] pcd_open :open requested
+[69827.788369] pcd_open :open Successfull
+[69827.788380] pcd_write :write requested for 3985 bytes
+[69827.788381] pcd_write :Current offset: 0
+[69827.788382] pcd_write :Number of bytes write: 512
+[69827.788383] pcd_write :New offset: 512
+[69827.788384] pcd_write :write requested for 3473 bytes
+[69827.788385] pcd_write :Current offset: 512
+[69827.788385] pcd_write :No space left in device
+[69827.788520] pcd_release :release requested
+[69827.788522] pcd_release :release Successfull
+root@sathish-VirtualBox:/home/sathish/workspace/ldd/pcd#
+
+

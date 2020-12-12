@@ -89,8 +89,10 @@ ssize_t pcd_write(struct file *fp, const char __user *buf, size_t count, loff_t 
 	if ((*off + count) > PCD_MEM_SIZE)
 		count = PCD_MEM_SIZE - *off;
 
-	if (!count)
+	if (!count) {
+		pr_err("No space left in device\n");
 		return -ENOMEM;
+	}
 
 	if (copy_from_user(&pcd_buf[*off], buf, count)) {
 		return -EFAULT;
@@ -133,8 +135,14 @@ struct class *pcd_class;
 struct device *pcd_device;
 
 static int __init pcd_driver_init(void) {
+	int rc;
+
 	/* Dynamically allocate the device number */
-	alloc_chrdev_region(&pcd_dev_num, 0, 1, "pcd_devices");
+	rc = alloc_chrdev_region(&pcd_dev_num, 0, 1, "pcd_devices");
+	if (rc < 0) {
+		pr_err("Chrdev failed\n");
+		goto out;
+	}
 
 	pr_info("Device number: Major:Minor=>%d:%d\n", MAJOR(pcd_dev_num), MINOR(pcd_dev_num));
 
@@ -143,17 +151,40 @@ static int __init pcd_driver_init(void) {
 
 	/* Register cdev with VFS */
 	pcd_cdev.owner = THIS_MODULE; /* cdev_init memset struct to 0 */
-	cdev_add(&pcd_cdev, pcd_dev_num, 1);
+	rc = cdev_add(&pcd_cdev, pcd_dev_num, 1);
+	if (rc < 0)
+		pr_err("cdev add failed\n");
+		goto unreg_region;
 
 	/* create class for this device /sys/class/pcd_class */
 	pcd_class = class_create(THIS_MODULE, "pcd_class");
+	if (IS_ERR(pcd_class)) {
+		pr_err("Class creation failed\n");
+		rc = PTR_ERR(pcd_class);
+		goto del_cdev;
+	}
 
 	/* Create device */
 	pcd_device = device_create(pcd_class, NULL, pcd_dev_num, NULL, "pcd");
+	if (IS_ERR(pcd_device)) {
+		pr_err("Device creation failed\n");
+		rc = PTR_ERR(pcd_device);
+		goto del_class;
+	}
 
 	pr_info("Module init successfull\n");
 
 	return 0;
+
+del_class:
+	class_destroy(pcd_class);
+del_cdev:
+	cdev_del(&pcd_cdev);
+unreg_region:
+	unregister_chrdev_region(pcd_dev_num, 0);
+out:
+	return rc;
+
 }
 
 static void __exit pcd_driver_exit(void) {
