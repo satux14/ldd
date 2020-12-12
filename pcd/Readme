@@ -22,6 +22,9 @@ Device File Creation: udev or any commands/syscall
 Device File Access:
 	File object creation: For every open call and it is destroyed when last close
 
+![Screenshot](fops1.jpg)
+![Screenshot](udev.jpg)
+
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# insmod pcd_main.ko
 root@sathish-VirtualBox:/home/sathish/workspace/ldd/pseudo_char_driver# dmesg
 [63594.577587] pcd_driver_init :Device number: Major:Minor=>237:0
